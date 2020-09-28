@@ -2,27 +2,24 @@
 #define ARRAY_SIZE 5
 
 void insertArray(int arr[]);
-void findIndexOfMax(int arr[], int* indexOfMax);
-void findIndexOfMin(int arr[], int* indexOfMin);
 
-int calcSum(int arr[], int* indexOfMax, int* indexOfMin);
+int  findIndexOfMax(int arr[]);
+int findIndexOfMin(int arr[]);
+int calcSum(int arr[], int indexOfMax, int indexOfMin);
 
 int main()
 {
 	// variant 0
 
-	int indexOfMax = 0;
-	int indexOfMin = 0;
-
 	int arr[ARRAY_SIZE];
 
 	insertArray(arr);
 
-	findIndexOfMax(arr, &indexOfMax);
+	int indexOfMax = findIndexOfMax(arr);
 
-	findIndexOfMin(arr, &indexOfMin);
+	int indexOfMin = findIndexOfMin(arr);
 
-	printf("Sum is %d", calcSum(arr, &indexOfMax, &indexOfMin));
+	printf("Sum is %d", calcSum(arr, indexOfMax, indexOfMin));
 
 	getchar();
 	getchar();
@@ -39,40 +36,48 @@ void insertArray(int arr[])
 	}
 }
 
-void findIndexOfMax(int arr[], int* indexOfMax)
+int  findIndexOfMax(int arr[])
 {
+	int indexOfMax = 0;
+
 	for (int i = 0; i < ARRAY_SIZE; i++)
 	{
-		if (arr[i] > arr[*indexOfMax])
+		if (arr[i] > arr[indexOfMax])
 		{
-			*indexOfMax = i;
+			indexOfMax = i;
 		}
 	}
+
+	return indexOfMax;
 }
 
-void findIndexOfMin(int arr[], int* indexOfMin)
+int findIndexOfMin(int arr[])
 {
+	int indexOfMin = 0;
+
 	for (int i = 0; i < ARRAY_SIZE; i++)
 	{
-		if (arr[i] < arr[*indexOfMin])
+		if (arr[i] < arr[indexOfMin])
 		{
-			*indexOfMin = i;
+			indexOfMin = i;
 		}
 	}
+
+	return indexOfMin;
 }
 
-int calcSum(int arr[], int* indexOfMax, int* indexOfMin)
+int calcSum(int arr[], int indexOfMax, int indexOfMin)
 {
 	int sum = 0;
-	double d = (arr[*indexOfMax] + arr[*indexOfMin]) / 2.0;
+	double d = (arr[indexOfMax] + arr[indexOfMin]) / 2.0;
 
-	if (*indexOfMax == ARRAY_SIZE - 1)
+	if (indexOfMax == ARRAY_SIZE - 1)
 	{
 		printf("Sum is 0");
 	}
 	else
 	{
-		for (int i = *indexOfMax + 1; i < ARRAY_SIZE; i++)
+		for (int i = indexOfMax + 1; i < ARRAY_SIZE; i++)
 		{
 			if (arr[i] > d)
 				sum += arr[i];
