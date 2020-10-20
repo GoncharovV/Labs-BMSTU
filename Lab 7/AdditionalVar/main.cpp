@@ -9,7 +9,7 @@ void freeMatrix(int** matrix, int n);
 void inputMatrix(int** matrix, int n, int m);
 void printMatrix(int** matrix, int n, int m);
 
-void spiral_sort(int** matrix, int n, int m);
+void spiralSort(int** matrix, int n, int m);
 void bubbleSort(int* arr, int len);
 int* parseMatrix(int** matrix, int n, int m);
 
@@ -21,7 +21,7 @@ int main()
 	int** matrix = createMatrix(n, m);
 	inputMatrix(matrix, n, m);
 
-	spiral_sort(matrix, n, m);
+	spiralSort(matrix, n, m);
 
 	printMatrix(matrix, n, m);
 
@@ -100,7 +100,7 @@ void bubbleSort(int* arr, int size)
 	}
 }
 
-void spiral_sort(int** matrix, int n, int m)
+void spiralSort(int** matrix, int n, int m)
 {
 	int* arr = parseMatrix(matrix, n, m);
 
