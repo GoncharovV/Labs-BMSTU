@@ -23,6 +23,8 @@ void displayBooks();
 void sortBooks(int (*compare)(Book*, Book*));
 void deleteBook();
 
+
+
 void inputBook(Book* book);
 void printBook(Book* book);
 void setBook(Book* book, char* str);
@@ -37,6 +39,17 @@ void swapBooks(Book* book1, Book* book2);
 void copyBook(Book* dest, Book* source);
 int compareName(Book* book1, Book* book2);
 int compareRank(Book* book1, Book* book2);
+
+
+// Delete fucnts
+
+void deleteBooksByAuthor(Book** books, char* author, int* rowsCount);
+
+void shiftBooks(Book** books, int rowsCount, int from);
+
+void updateFile(Book** books, int rowCount);
+
+//
 
 char** createMatrix(int n);
 void freeMatrix(char** matrix, int n);
@@ -263,47 +276,6 @@ void copyBook(Book* dest, Book* source)
 	dest->Rank = source->Rank;
 }
 
-void deleteBook()
-{
-	FILE* file;
-	fopen_s(&file, PATH, "a+b");
-
-	if (file)
-	{
-		printf("Which author do you want to delete? (name)\n > ");
-
-		char* name = (char*)malloc(STR_LEN * sizeof(char));
-		gets_s(name, STR_LEN);
-
-		int booksCount = getBooksCount(&file);
-
-		Book book;
-
-		book = readBookFromFile(&file, 2);
-
-		rewind(file);
-		fwrite(&book, sizeof(Book), 1, file);
-
-		for (int j = 0; j < booksCount - 1; j++)
-		{
-			
-		}
-
-		/*for (int i = 0; i < booksCount; i++)
-		{
-			book = readBookFromFile(&file, i);
-
-			if (!strcmp(book.Name, name))
-			{
-
-			}
-
-		}*/
-
-		fclose(file);
-	}
-}
-
 int compareRank(Book* book1, Book* book2)
 {
 	return (book1->Rank < book2->Rank);
@@ -316,3 +288,75 @@ int compareName(Book* book1, Book* book2)
 	else
 		return 1;
 }
+
+#pragma region bookDeleteFuncts
+
+void deleteBook()
+{
+	FILE* file;
+	fopen_s(&file, PATH, "a+b");
+
+	if (file)
+	{
+		printf("Which author do you want to delete? (name)\n > ");
+
+		char* author = (char*)malloc(STR_LEN * sizeof(char));
+		gets_s(author, STR_LEN);
+
+		int booksCount = getBooksCount(&file);
+
+		Book* books = (Book*)malloc(booksCount * sizeof(Book));
+
+		for (int i = 0; i < booksCount; i++)
+		{
+			books[i] = readBookFromFile(&file, i);
+		}
+
+		deleteBooksByAuthor(&books, author, &booksCount);
+
+		fclose(file);
+
+		updateFile(&books, booksCount);
+
+		free(books);
+	}
+}
+
+void deleteBooksByAuthor(Book** books, char* author, int* rowsCount)
+{
+	for (int i = 0; i < *rowsCount; i++)
+	{
+		if (!strcmp((*books)[i].Author, author))
+		{
+			shiftBooks(books, *rowsCount, i);
+			(*rowsCount)--;
+			i--;
+		}
+	}
+}
+
+void shiftBooks(Book** books, int rowsCount, int from)
+{
+	for (int i = from; i < rowsCount - 1; i++)
+	{
+		copyBook(&(*books)[i], &(*books)[i + 1]);
+	}
+
+	realloc(*books, (rowsCount - 1) * sizeof(Book));
+}
+
+void updateFile(Book** books, int rowCount)
+{
+	FILE* file;
+	fopen_s(&file, PATH, "w");
+
+	if (file)
+	{
+		for (int i = 0; i < rowCount; i++)
+		{
+			writeBookToFile(books[i], &file);
+		}
+	}
+}
+
+#pragma endregion
